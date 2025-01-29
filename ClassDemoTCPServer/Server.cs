@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +10,12 @@ namespace ClassDemoTCPServer
 {
     public class Server
     {
-        private const int PORTNUMMER = 17;
+        private const int PORTNUMMER = 7; // ekko server
 
 
         public void Start()
         {
-            TcpListener server = new TcpListener(PORTNUMMER);
+            TcpListener server = new TcpListener(IPAddress.Loopback, PORTNUMMER);
             server.Start();
             
 
