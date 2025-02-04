@@ -25,10 +25,10 @@ namespace ClassDemoTCPServer
             StreamWriter writer = new StreamWriter(socket.GetStream());
             writer.AutoFlush = true;
 
-            string line = reader.ReadLine();
+            string? line = reader.ReadLine();
 
             // gør et eller andet
-            line = line.ToUpper();
+            line = line?.ToUpper();
 
             writer.WriteLine(line);
             //writer.Flush();
