@@ -17,10 +17,21 @@ namespace ClassDemoTCPServer
         {
             TcpListener server = new TcpListener(IPAddress.Loopback, PORTNUMMER);
             server.Start();
-            
 
-            TcpClient socket  = server.AcceptTcpClient();
+            while (true)
+            {
+                TcpClient socket = server.AcceptTcpClient();
+                DoOneClient(socket);
+            }
 
+
+
+
+            //server.Stop();
+        }
+
+        private static void DoOneClient(TcpClient socket)
+        {
             StreamReader reader = new StreamReader(socket.GetStream());
             StreamWriter writer = new StreamWriter(socket.GetStream());
             writer.AutoFlush = true;
@@ -34,9 +45,6 @@ namespace ClassDemoTCPServer
             //writer.Flush();
 
             socket?.Close();
-
-
-
         }
     }
 }
