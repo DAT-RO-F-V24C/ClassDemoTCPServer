@@ -17,11 +17,16 @@ namespace ClassDemoTCPServer
         {
             TcpListener server = new TcpListener(IPAddress.Loopback, PORTNUMMER);
             server.Start();
+            Console.WriteLine("Server started at port " + PORTNUMMER);
 
             while (true)
             {
                 TcpClient socket = server.AcceptTcpClient();
-                DoOneClient(socket);
+                Task.Run(() =>
+                {
+                    TcpClient tempSocket = socket;
+                    DoOneClient(tempSocket);
+                });
             }
 
 
@@ -36,13 +41,23 @@ namespace ClassDemoTCPServer
             StreamWriter writer = new StreamWriter(socket.GetStream());
             writer.AutoFlush = true;
 
+            /*
+             * Her begynder protokollen
+             */
+
+            // her ekko, hvor svaret bliver i store bogstaver
             string? line = reader.ReadLine();
+            Console.WriteLine("line from client :: " + line);
 
             // gør et eller andet
             line = line?.ToUpper();
 
             writer.WriteLine(line);
             //writer.Flush();
+
+            /*
+             * Slut
+             */
 
             socket?.Close();
         }
