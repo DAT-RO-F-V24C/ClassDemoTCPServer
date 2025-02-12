@@ -10,8 +10,15 @@ namespace ClassDemoTCPServer
 {
     public class Server
     {
-        private const int PORTNUMMER = 7; // ekko server
+        private readonly int PORTNUMMER = 7; // ekko server
+        private readonly string NAME = "Dummy";
 
+
+        public Server(int port = 7, string name = "Dummy")
+        {
+            PORTNUMMER = port;
+            NAME = name;
+        }
 
         public void Start()
         {
@@ -45,21 +52,72 @@ namespace ClassDemoTCPServer
              * Her begynder protokollen
              */
 
-            // her ekko, hvor svaret bliver i store bogstaver
-            string? line = reader.ReadLine();
-            Console.WriteLine("line from client :: " + line);
+            // EchoProtocol(reader, writer);
 
-            // gør et eller andet
-            line = line?.ToUpper();
-
-            writer.WriteLine(line);
-            //writer.Flush();
+            MathProtocol(reader, writer);
 
             /*
              * Slut
              */
 
             socket?.Close();
+        }
+
+        private static void EchoProtocol(StreamReader reader, StreamWriter writer)
+        {
+            string? line = reader.ReadLine();
+            Console.WriteLine("line from client :: " + line);
+            
+            writer.WriteLine(line); // echo line
+        }
+
+        private static void MathProtocol(StreamReader reader, StreamWriter writer)
+        {
+            string? str = reader.ReadLine();
+            // todo - fejl ved null string
+            string[] strSplittet = str.Split();
+
+            try
+            {
+                string method = strSplittet[0];
+                int tal1 = int.Parse(strSplittet[1]);
+                int tal2 = int.Parse(strSplittet[2]);
+            
+
+            string returnLine = "";
+
+            switch (method.ToLower())
+            {
+                case "add":
+                    {
+                            returnLine = "Resultat " + (tal1 + tal2);
+                            break;
+                    }
+                case "mul":
+                    {
+                        returnLine = "Resultat " + (tal1 * tal2);
+                        break;
+                    }
+                case "sub":
+                    {
+                        returnLine = "Resultat " + (tal1 - tal2);
+                        break;
+                    }
+                case "div":
+                    {
+                        returnLine = "Resultat " + (tal1 / tal2);
+                        break;
+                    }
+                default:
+                        throw new ArgumentException("No such method");
+                }
+
+                writer.WriteLine(returnLine);
+            }
+            catch (Exception ex)
+            {
+                writer.WriteLine("Error \r\n" + ex.Message);
+            }
         }
     }
 }
